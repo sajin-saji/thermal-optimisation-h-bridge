@@ -1,0 +1,6 @@
+parameter,symbol,initial_value,lower_bound,upper_bound,unit
+Number of fins,N,8,8,14,count
+Fin thickness,th,2.0,0.5,2.0,mm
+Base height,bh,1.5,0.5,2.0,mm
+Overall heat sink height,H,11,,,mm (fixed)
+Material,,Aluminium,,,

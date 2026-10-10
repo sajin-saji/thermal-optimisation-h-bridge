@@ -1,0 +1,8 @@
+item,material,quantity,heat_output_W
+Motor Controller IC,Silicon,1,20
+Electrolytic Capacitor,Ceramic,4,1
+Diode,Silicon,4,0
+Optocoupler,Silicon,4,0
+MOSFET,Silicon,2,2
+Resistor,Ceramic,5,0
+PCB Board,FR4,1,0

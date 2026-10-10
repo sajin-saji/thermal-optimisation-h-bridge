@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H-Bridge Thermal Results</title>
+<style>
+  :root {
+    --bg: #f4f3ef; --surface: #fcfcfb; --ink: #1f1f1e; --ink-2: #5c5b55; --line: #e4e3de;
+    --accent: #2a78d6; --hot: #c4402a; --ok: #1a7f4e;
+    --c1: #2a78d6; --c2: #eb6834; --c3: #1baf7a; --c4: #eda100;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --line: #2e2e2c;
+      --accent: #3987e5; --hot: #ff7a5c; --ok: #4cc38a;
+      --c1: #3987e5; --c2: #d95926; --c3: #199e70; --c4: #c98500;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { background: #26344f; color: #fff; padding: 14px 16px; }
+  header .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+  header h1 { font-size: 17px; margin: 0; font-weight: 600; }
+  header span { font-size: 13px; opacity: .85; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  main { padding: 18px 16px 40px; }
+  .note { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+  .tile .k { font-size: 12.5px; color: var(--ink-2); }
+  .tile .v { font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tile .s { font-size: 12px; color: var(--ink-2); }
+  .hot { color: var(--hot); } .ok { color: var(--ok); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px; min-width: 0; }
+  .card h2 { font-size: 14.5px; margin: 0 0 2px; }
+  .card .sub { font-size: 12.5px; color: var(--ink-2); margin: 0 0 12px; }
+  .bars { display: grid; gap: 8px; }
+  .bar { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+  .bar .track { position: relative; height: 22px; }
+  .bar .fill { height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; transition: opacity .15s; }
+  .bar .val { position: absolute; top: 2px; white-space: nowrap; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .bar.dim .fill { opacity: .35; }
+  .limit { position: absolute; top: -4px; bottom: -4px; border-left: 1px dashed var(--ink-2); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tabs button { font: inherit; font-size: 13px; padding: 5px 10px; border-radius: 5px; border: 1px solid var(--line);
+                 background: var(--surface); color: var(--ink); cursor: pointer; }
+  .tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--line); background: #fff; }
+  figcaption { font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 5px 6px; border-bottom: 1px solid var(--line); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--ink-2); font-weight: 500; position: sticky; top: 0; background: var(--surface); }
+  td.sel, th.sel { background: color-mix(in srgb, var(--accent) 12%, transparent); font-weight: 600; }
+  .tablewrap { max-height: 420px; overflow: auto; }
+  .full { grid-column: 1 / -1; }
+  footer { color: var(--ink-2); font-size: 12.5px; margin-top: 18px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Thermal Optimisation of an H-Bridge Motor Controller</h1>
+  <span>Ansys Icepak CFD · 4 cooling cases · ambient 25 °C</span>
+</div></header>
+
+<main class="wrap">
+  <p class="note">Results from my thesis. All numbers come from the Ansys Icepak simulations in the thesis (Tables 5.1 to 5.5).</p>
+
+  <section class="tiles" aria-label="Key numbers">
+    <div class="tile"><div class="k">Without cooling</div><div class="v hot">154.3 °C</div><div class="s">motor controller IC, case 1</div></div>
+    <div class="tile"><div class="k">Heat sink only</div><div class="v">126.7 °C</div><div class="s">−27.6 °C vs case 1</div></div>
+    <div class="tile"><div class="k">Optimised heat sink</div><div class="v">108.7 °C</div><div class="s">−45.6 °C vs case 1</div></div>
+    <div class="tile"><div class="k">Optimised heat sink + fan</div><div class="v ok">53.9 °C</div><div class="s">−100.4 °C (−65.1 %)</div></div>
+    <div class="tile"><div class="k">Design points tested</div><div class="v">35</div><div class="s">N 8–14 · th, bh 0.5–2 mm</div></div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Hotspot temperature by case</h2>
+      <p class="sub">Max. motor controller IC temperature. Dashed line = 85 °C typical limit. Click a bar to select the case.</p>
+      <div class="bars" id="bars"></div>
+      <table style="margin-top:18px">
+        <thead><tr><th>Case</th><th>Heat transfer</th><th>Flow</th></tr></thead>
+        <tbody>
+          <tr><td>1 - 3</td><td>Natural convection</td><td>Laminar</td></tr>
+          <tr><td>4</td><td>Forced convection (fan)</td><td>Turbulent, k-ε</td></tr>
+        </tbody>
+      </table>
+      <p class="sub" style="margin-top:12px">Heat sink optimisation: fin count N (8 to 14), fin thickness th and base height bh (0.5 to 2 mm), Response Surface Optimisation in Ansys Workbench, objective = minimum max. temperature.</p>
+    </section>
+
+    <section class="card">
+      <h2>Temperature field</h2>
+      <p class="sub">Icepak contour plot for the selected case.</p>
+      <div class="tabs" id="tabs" role="group" aria-label="Select case"></div>
+      <figure><img id="contour" alt=""><figcaption id="cap"></figcaption></figure>
+    </section>
+
+    <section class="card full">
+      <h2>Component temperatures (°C)</h2>
+      <p class="sub">All components in all 4 cases. Selected case is highlighted. Click a column header to sort.</p>
+      <div class="tablewrap"><table id="tbl"></table></div>
+    </section>
+  </div>
+
+  <footer>Data: <a href="../data/component_temperatures.csv">component_temperatures.csv</a> ·
+    Full thesis: <a href="../docs/thesis_optimum_design_electronic_cooling.pdf">PDF</a> ·
+    Code: <a href="../src/analyse_results.py">analyse_results.py</a></footer>
+</main>
+
+<script>
+const CASES = [
+  { id: 1, name: "No heat sink",             max: 154.3, img: "../docs/figures/03_case1_no_heatsink.png",        cap: "Case 1 - natural convection, laminar, no heat sink" },
+  { id: 2, name: "Heat sink",                max: 126.7, img: "../docs/figures/04_case2_heatsink.png",           cap: "Case 2 - user-defined aluminium heat sink (8 fins, 2 mm)" },
+  { id: 3, name: "Optimised heat sink",      max: 108.7, img: "../docs/figures/05_case3_optimised_heatsink.png", cap: "Case 3 - heat sink after Response Surface Optimisation" },
+  { id: 4, name: "Optimised heat sink + fan", max: 53.9, img: "../docs/figures/06_case4_fan_isometric.png",      cap: "Case 4 - forced convection, 1000 rpm fan parallel to fins, k-epsilon" },
+];
+const ROWS = [
+  ["C1",43.7,41.2,44.02,27.34],["C2",28.31,26.2,28.4,27.31],["C3",25.4,24.8,25.4,29.64],["C4",25.0,25.2,25.12,28.68],
+  ["Motor Controller IC",154.3,126.7,108.71,53.9],
+  ["D1",32.8,31.5,33.32,26.82],["D2",26.26,25.3,26.38,27.78],["D3",43.65,42.4,39.57,31.65],["D4",43.7,42.7,38.79,31.64],
+  ["D5",86.04,84.6,72.38,26.64],["D6",97.01,94.3,88.34,27.2],
+  ["M1 (MOSFET)",34.5,32.6,35.19,27.21],["M2 (MOSFET)",25.61,23.8,25.70,28.9],["Motor Pins",26.17,25.4,26.18,29.43],
+  ["OP1",45.52,44.6,44.47,26.93],["OP2",39.43,38.9,38.25,27.45],["OP3",35.61,34.62,34.40,27.91],["OP4",31.05,31.1,30.34,28.52],
+  ["PCB Board",154.3,126.1,108.6,53.75],["Power Supply",25.25,24.27,25.28,29.10],
+  ["R1",108.51,107.35,92.68,26.29],["R2",77.67,75.89,71.58,26.36],["R3",113.07,111.7,96.6,26.15],["Support IC",63.29,62.9,61.52,26.83],
+];
+const SCALE = 200;
+let sel = 1, sortCol = 1, sortDesc = true;
+
+function store(k, v) { try { v === undefined ? null : localStorage.setItem(k, v); return localStorage.getItem(k); } catch (e) { return null; } }
+
+function renderBars() {
+  const el = document.getElementById("bars");
+  el.innerHTML = "";
+  CASES.forEach(c => {
+    const row = document.createElement("div");
+    row.className = "bar" + (c.id === sel ? "" : " dim");
+    row.title = `Case ${c.id}: ${c.max} °C`;
+    const pct = c.max / SCALE * 100;
+    row.innerHTML = `<span>${c.id}. ${c.name}</span>
+      <div class="track"><div class="fill" style="width:${pct}%"></div>
+      <span class="val" style="left:calc(${pct}% + 6px)">${c.max.toFixed(1)} °C</span>
+      <span class="limit" style="left:${85 / SCALE * 100}%"></span></div>`;
+    row.onclick = () => select(c.id);
+    el.appendChild(row);
+  });
+}
+
+function renderTabs() {
+  const el = document.getElementById("tabs");
+  el.innerHTML = "";
+  CASES.forEach(c => {
+    const b = document.createElement("button");
+    b.textContent = `Case ${c.id}`;
+    b.setAttribute("aria-pressed", c.id === sel);
+    b.onclick = () => select(c.id);
+    el.appendChild(b);
+  });
+  const c = CASES[sel - 1];
+  const img = document.getElementById("contour");
+  img.src = c.img; img.alt = c.cap;
+  document.getElementById("cap").textContent = c.cap;
+}
+
+function renderTable() {
+  const rows = [...ROWS].sort((a, b) => {
+    const d = typeof a[sortCol] === "string" ? a[sortCol].localeCompare(b[sortCol]) : a[sortCol] - b[sortCol];
+    return sortDesc ? -d : d;
+  });
+  const heads = ["Component", "Case 1", "Case 2", "Case 3", "Case 4"];
+  let h = "<thead><tr>" + heads.map((t, i) =>
+    `<th data-i="${i}" class="${i === sel ? "sel" : ""}" style="cursor:pointer">${t}${i === sortCol ? (sortDesc ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>";
+  rows.forEach(r => {
+    h += "<tr>" + r.map((v, i) => `<td class="${i === sel ? "sel" : ""}">${typeof v === "number" ? v.toFixed(1) : v}</td>`).join("") + "</tr>";
+  });
+  const t = document.getElementById("tbl");
+  t.innerHTML = h + "</tbody>";
+  t.querySelectorAll("th").forEach(th => th.onclick = () => {
+    const i = +th.dataset.i;
+    sortDesc = i === sortCol ? !sortDesc : i !== 0;
+    sortCol = i; renderTable();
+  });
+}
+
+function select(id) { sel = id; store("case", String(id)); sortCol = id; sortDesc = true; renderAll(); }
+function renderAll() { renderBars(); renderTabs(); renderTable(); }
+
+const saved = parseInt(store("case"), 10);
+if (saved >= 1 && saved <= 4) { sel = saved; sortCol = saved; }
+renderAll();
+</script>
+</body>
+</html>

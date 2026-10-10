@@ -1,0 +1,5 @@
+case,description,max_ic_temperature_C,heat_transfer,flow_regime,cooling_added
+1,Without heat sink,154.3,Natural convection,Laminar,None
+2,With user-defined heat sink,126.7,Natural convection,Laminar,Aluminium heat sink (8 fins x 2 mm)
+3,With optimised heat sink,108.7,Natural convection,Laminar,Heat sink optimised with Response Surface Optimisation
+4,With optimised heat sink and fan,53.9,Forced convection,Turbulent (k-epsilon),Optimised heat sink + 1000 rpm fan parallel to fins

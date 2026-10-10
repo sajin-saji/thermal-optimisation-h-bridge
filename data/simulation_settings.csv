@@ -1,0 +1,16 @@
+setting,value
+Software,Ansys Icepak (Mesher HD) + Ansys Workbench Response Surface Optimisation
+Mesh elements,644499
+Mesh nodes (second row of thesis Table 3.3 - also labelled "elements" there),666626
+Multi-level mesh,Level 1 (PCB) to Level 4 (resistors / diodes / optocouplers)
+Natural convection model,Boussinesq approximation
+Operating pressure,101325 Pa
+Ambient temperature,25 C
+Radiation,Off
+Iterations,200 per run
+Convergence - flow,1e-3
+Convergence - energy,1e-7
+Convergence - joule heating,1e-7
+Case 4 turbulence model,k-epsilon
+Case 4 fan speed,1000 rpm
+Case 4 inlet air speed,8.7 m/s (about 7.5 m/s through the fins)
