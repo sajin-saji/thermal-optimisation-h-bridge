@@ -4,7 +4,7 @@ I did this project for my thesis *"Optimum Design of Electronic Cooling"*. The q
 
 I modelled a simplified H-bridge motor controller board in **Ansys Icepak**, ran a CFD thermal simulation and then tried three ways to bring the hotspot temperature down. With all three steps together, the maximum temperature dropped from **154.3 °C to 53.9 °C**.
 
-Live dashboard: `https://sajin-saji.github.io/thermal-optimisation-h-bridge/dashboard/` (works after GitHub Pages is switched on, see [Publish the dashboard](#publish-the-dashboard))
+Live dashboard: https://sajin-saji.github.io/thermal-optimisation-h-bridge/dashboard/
 
 ![Hotspot temperature by case](results/01_max_temperature_by_case.png)
 
